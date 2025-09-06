@@ -40,7 +40,7 @@ interface Cluster {
 export class App {
   // --- STATE MANAGEMENT ---
   files = signal<{ transfers: File | null, microbiology: File | null }>({ transfers: null, microbiology: null });
-  currentView = signal<'table' | 'list' | 'graph'>('table');
+  currentView = signal<'table' | 'list'>('table');
   clusters = signal<Cluster[]>([]);
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -131,7 +131,7 @@ export class App {
       }
   }
 
-  setView(view: 'table' | 'list' | 'graph'): void {
+  setView(view: 'table' | 'list'): void {
     this.currentView.set(view);
   }
 
