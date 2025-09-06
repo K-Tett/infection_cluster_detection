@@ -63,7 +63,7 @@ def parse_and_store_csv(db: Session, transfers_content: bytes, microbiology_cont
         db.rollback()
         raise Exception(f"Error parsing and storing CSV data: {str(e)}")
 
-def find_clusters_from_db(db: Session, time_window: int = 7, location_overlap: bool = True) -> Dict[str, Any]:
+def find_clusters_from_db(db: Session, time_window: int = 14, location_overlap: bool = True) -> Dict[str, Any]:
     """
     Identifies infection clusters using database queries for optimal performance.
     NOTE: Database-optimized cluster detection with temporal and spatial analysis
