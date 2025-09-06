@@ -78,13 +78,27 @@ A cluster is a group of related cases that may indicate a common exposure or out
 ``` bash
     npm install
 ```
-2. Place your data files (transfers.csv and microbiology.csv) in the data/ directory.
-3. Run the FastAPI server (Backend only)[^1]:
+2. Run the docker container to start PostgreSQL.
+```bash
+    # if on Windows, ensure to run WSL first then open Docker Desktop
+    .\start.bat
+```
+3. Run the setup for the backend first
+```bash
+    python setup_db.py
+```
+4. Run the FastAPI server (Backend only)[^1]:
 ``` bash
+    # move to backend dir
+    cd .\backend
+    # start the backend service
     uvicorn main:app --reload
 ``` 
 5. Run the frontend [^2]:
 ``` bash
+    # move back to src
+    cd ..
+    # run Angular dev server
     ng serve
 ```
 
@@ -105,9 +119,30 @@ A cluster is a group of related cases that may indicate a common exposure or out
 * Description: Identifies and returns infection clusters from the uploaded data.
 * Response: A JSON object containing the detected clusters.
 
-### Summary
+### LLM Summarizer
+* LLM has not being implemented
+* Use 5 sets of mock responses
+```typescript
+    switch (filterType) {
+      case 'cluster_id':
+        response = `Cluster ${cluster.id} contains ${cluster.patientCount} patients with ${cluster.infection} infection. This cluster represents a significant outbreak requiring immediate attention and isolation protocols.`;
+        break;
+      case 'size':
+        response = `This ${cluster.infection} cluster involves ${cluster.patientCount} patients. ${cluster.patientCount > 5 ? 'Large cluster size indicates high transmission risk.' : 'Moderate cluster size suggests contained transmission.'}`;
+        break;
+      case 'location':
+        response = `${cluster.infection} cluster detected across multiple ward locations. Geographic spread suggests possible nosocomial transmission requiring enhanced infection control measures.`;
+        break;
+      case 'timeframe':
+        response = `${cluster.infection} cluster timeframe spans multiple days with overlapping patient stays. Temporal clustering indicates active transmission period requiring immediate intervention.`;
+        break;
+      case 'significance':
+        response = `High significance cluster: ${cluster.patientCount} patients with ${cluster.infection}. Recommend immediate isolation, contact tracing, and enhanced cleaning protocols.`;
+        break;
+    }
+```
 
-
+# Angular CLI commands
 ## Development server
 To start a local development server, run:
 ```bash
@@ -152,24 +187,35 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Design Decisions and Trade-offs
 ### Why this design choice?
 - Graph nodes are color-coded to indicate the contact window.
-- Graph nodes force against each other shows the significance between each other.
+- Spatial clustering is easy to understand which capture basic link.
+- Postgres server to provide ACID compliance for medical data.
 
 ### Trade off
-- direct contact cluster is simplified approach and couldn't indicate how each individual interact with each other, directly or indirectly.
+- Direct contact cluster is simplified approach and couldn't indicate how each individual interact with each other, directly or indirectly.
 - Pathogens can travel either airborne or need direct contact, which this cluster method didn't show how significant the location is.
 - Non-patient may be the patient-zero.
+- Currently, the risk factor is calculated with how many connections a patient has contacted with in the time window.
+- Direction of infection: We don't know who spread infection to whom?
+- It needs to compare with every other patient which increase the computation complexity.
+- Missing link to the equation would break the clustering and causes us to mistake two different clusters to be low risk or significance.
+- REST endpoints is fast for small request, but larger dataset upload or request will timeout the system.
+    - Celery with Redis could be a next step
+- Currently, we save everything in memory to show the data on table, list and the graph. It is not efficient when scale up.
 
-## Roadmap
-- StEP model: add proximity model instead of direct contact to form a cluster
-- Interactive timeline and curve like CATHAI
-- Early warning system based on the use of anitbiotircs (Fan et al. paper)
-- GraphRAG: add guidelines or related documents to formulate the best course of actions for clinician if we found a big or small cluster of potential infection.
-- LLM API: GPT-5 nano from OpenAI or Gemini 2.5 Flash from Google as first line LLM before fall back to local LLM and fallback to mock response.
-- LLM analyzer improvement: highlights clusters when providing an answer to the prompt
-- Parquet file conversion
-- LLM analyzer: add the LLM analyzer on the sidebar with working LLM
-- UXUI improvements: circle around the cluster to identify the clusters ID when zoom out. group the clusters that is high risk or low risk in their own bigger circles.
-- Proper DevOps implementation: run frontend, backend and database in containers.
+# Roadmap
+- [ ] StEP model: add proximity model instead of direct contact to form a cluster
+- [ ] Improve algorithm: add how many days has the person contact to specific group of patients and color code them to show how much risk they are in. We can create a risk dictionary for each location if smaller area, then the chance of contact is higher than a wide space.
+- [ ] A greedy algorithm with Louvain method: provide the graph maximum density of high-weight links in a cluster and minimize the links with other clusters. This will ignore false postive links.
+- [ ] Analyze before clustering: identify source or patient zero and trace the link as the patient zero will be the most crucial point of outbreak and most risky to spread further. 
+- [ ] Interactive timeline and curve like CATHAI
+- [ ] Early warning system based on the use of anitbiotircs (Fan et al. paper)
+- [ ] GraphRAG: add guidelines or related documents to formulate the best course of actions for clinician if we found a big or small cluster of potential infection.
+- [ ] LLM API: GPT-5 nano from OpenAI or Gemini 2.5 Flash from Google as first line LLM before fall back to local LLM and fallback to mock response.
+- [ ] LLM analyzer improvement: highlights clusters when providing an answer to the prompt
+- [ ] Parquet file conversion
+- [ ] LLM analyzer: add the LLM analyzer on the sidebar with working LLM
+- [ ] UXUI improvements: circle around the cluster to identify the clusters ID when zoom out. group the clusters that is high risk or low risk in their own bigger circles. Histogram and timeline to show the contact events over time.
+- [ ] Proper DevOps implementation: run frontend, backend and database in containers.
 
 ## Additional Resources
 
