@@ -1,0 +1,165 @@
+# Infection Cluster Detection - Medical Data Application
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files
+
+# IMPORTANT: Medical Data Security
+# Never commit actual patient data, credentials, or sensitive medical information
+data/
+*.csv
+*.xlsx
+*.json
+!data/.gitkeep
+!**/sample_data/
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+.mypy_cache/
+.pytest_cache/
+.coverage
+.angular/
+
+# Node.js
+/node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Python Dependencies & Virtual Environments
+venv/
+env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+postgresql_data/
+postgres_data/
+data/*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# IDE and Editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+.claude/*
+.claude/
+
+# Visual Studio Code
+.vscode/*
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# JetBrains IDEs
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Angular
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+e2e/
+
+# FastAPI / Python
+*.log
+logs/
+.pytest_cache/
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Medical/Clinical Configuration
+config/secrets/
+credentials/
+certificates/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*~
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Jupyter Notebooks (if used for data analysis)
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Large model files (LLM/AI models)
+*.bin
+*.onnx
+models/
+*.model
+*.pt
+*.pth
+
+# Documentation build
+docs/_build/
+site/
+
+# Markdown files
+BACKEND.md
+CHANGELOG.md
+CLAUDE.md
+DATABASE.md
+OVERVIEW.md
+WIREFRAME_DESIGN.md
+DOCKER-SETUP.md

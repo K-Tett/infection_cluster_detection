@@ -1,0 +1,155 @@
+# NOTE: Complete Docker Compose setup for infection cluster detection system
+# NOTE: Includes PostgreSQL database, FastAPI backend, and Angular frontend services
+# NOTE: Version specification is obsolete in Docker Compose v2+
+
+services:
+  # PostgreSQL Database
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: infection_cluster_postgres
+    environment:
+      POSTGRES_DB: infection_clusters
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - infection_cluster_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d infection_clusters"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # pgAdmin for database management (optional)
+  #pgadmin:
+  #  image: dpage/pgadmin4:latest
+  #  container_name: infection_cluster_pgadmin
+  #  environment:
+  #    PGADMIN_DEFAULT_EMAIL: admin@hospital.com
+  #    PGADMIN_DEFAULT_PASSWORD: admin123
+  #    PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #  ports:
+  #    - "5050:80"
+  #  volumes:
+  #    - pgadmin_data:/var/lib/pgadmin
+  #  networks:
+  #    - infection_cluster_network
+  #  depends_on:
+  #    postgres:
+  #      condition: service_healthy
+  #  restart: unless-stopped
+
+  # Backend FastAPI Service
+#  backend:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    container_name: infection_cluster_backend
+#    environment:
+#      DATABASE_URL: postgresql://postgres:password@postgres:5432/infection_clusters
+#      ENVIRONMENT: development
+#      PYTHONPATH: /app
+#      CORS_ORIGINS: http://localhost:4200,http://frontend:4200
+#    ports:
+#      - "8000:8000"
+#    networks:
+#      - infection_cluster_network
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
+#    restart: unless-stopped
+
+  # Frontend Angular Service
+#  frontend:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.frontend
+#    container_name: infection_cluster_frontend
+#    environment:
+#      NODE_ENV: development
+#      API_BASE_URL: http://backend:8000
+#      NG_CLI_ANALYTICS: false
+#    ports:
+#      - "4200:4200"
+#    volumes:
+#      - angular_cache:/app/.angular
+#    networks:
+#      - infection_cluster_network
+#    depends_on:
+#      backend:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4200"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 60s
+#    restart: unless-stopped
+
+  # HuggingFace LLM Service (optional, for stretch goals)
+#  llm-service:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile.llm
+#    container_name: infection_cluster_llm
+#    environment:
+#      MODEL_NAME: microsoft/Phi-4-multimodal-instruct
+#      DEVICE: cuda
+#      MAX_LENGTH: 512
+#    ports:
+#      - "8001:8001"
+#    volumes:
+#      - huggingface_cache:/root/.cache/huggingface
+#    networks:
+#      - infection_cluster_network
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: 1
+#              capabilities: [gpu]
+#    restart: unless-stopped
+#    profiles:
+#      - llm  # Optional service, start with: docker-compose --profile llm up
+
+volumes:
+  postgres_data:
+    driver: local
+    name: infection_cluster_postgres_data
+#  pgadmin_data:
+#    driver: local
+#    name: infection_cluster_pgadmin_data
+#  huggingface_cache:
+#    driver: local
+#    name: infection_cluster_huggingface_cache
+#  angular_cache:
+#    driver: local
+#    name: infection_cluster_angular_cache
+
+networks:
+  infection_cluster_network:
+    driver: bridge
+    name: infection_cluster_network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
+# NOTE: Docker Compose configuration for complete infection cluster detection stack
+# NOTE: Database initialization scripts run automatically on container start
+# NOTE: LLM service is optional (profile-based) for GPU environments
