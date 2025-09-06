@@ -33,7 +33,7 @@ A cluster is a group of related cases that may indicate a common exposure or out
 - Containerization: Docker
 - LLM: ```huggingface``` using ```microsoft/Phi-4-multimodal-instruct``` (fit for 16gb VRAM GPU)
 
-## API Architecture //TODO - 
+## API Architecture
 
 ## Project Structure
 ``` md
@@ -70,7 +70,7 @@ A cluster is a group of related cases that may indicate a common exposure or out
 - infection (string) : i.e. the infection type being tested for  
 - result (string) : ‘positive’ or ‘negative’ based on whether the infection was identified 
 
-## Setup //TODO - 
+## Setup
 1. Install dependencies:
 ``` bash
     pip install -r requirements.txt
@@ -91,7 +91,7 @@ A cluster is a group of related cases that may indicate a common exposure or out
 [^1] The application will be running at http://127.0.0.1:8000.
 [^2] The platform will be running at
 
-## Features //REVIEW - 
+## Features 
 ### Upload Files
 * URL: /upload/
 * Method: POST
@@ -105,7 +105,7 @@ A cluster is a group of related cases that may indicate a common exposure or out
 * Description: Identifies and returns infection clusters from the uploaded data.
 * Response: A JSON object containing the detected clusters.
 
-### Summary //TODO - 
+### Summary
 
 
 ## Development server
@@ -133,13 +133,13 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests //TODO
+## Running unit tests
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 ```bash
 ng test
 ```
 
-## Running end-to-end tests //TODO
+## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:
 
@@ -149,7 +149,7 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Design Decisions and Trade-offs //REVIEW - 
+## Design Decisions and Trade-offs
 ### Why this design choice?
 - Graph nodes are color-coded to indicate the contact window.
 - Graph nodes force against each other shows the significance between each other.
