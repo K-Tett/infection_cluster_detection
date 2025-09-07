@@ -33,8 +33,6 @@ A cluster is a group of related cases that may indicate a common exposure or out
 - Containerization: Docker
 - LLM: ```huggingface``` using ```microsoft/Phi-4-multimodal-instruct``` (fit for 16gb VRAM GPU)
 
-## API Architecture
-
 ## Project Structure
 ``` md
 .
@@ -205,6 +203,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 # Roadmap
 - [ ] StEP model: add proximity model instead of direct contact to form a cluster
 - [ ] Improve algorithm: add how many days has the person contact to specific group of patients and color code them to show how much risk they are in. We can create a risk dictionary for each location if smaller area, then the chance of contact is higher than a wide space.
+- [ ] Hierarchical Density-Based Spatial Clustering of Applications with Noise (HDBSCAN): use numpy to clusters data points or 'hotspot' into clusters of varying shapes and sizes and automatically ignoring outliers, by building a hierarchy of dense regions and extracting the most stable clusters.
 - [ ] A greedy algorithm with Louvain method: provide the graph maximum density of high-weight links in a cluster and minimize the links with other clusters. This will ignore false postive links.
 - [ ] Analyze before clustering: identify source or patient zero and trace the link as the patient zero will be the most crucial point of outbreak and most risky to spread further. 
 - [ ] Interactive timeline and curve like CATHAI

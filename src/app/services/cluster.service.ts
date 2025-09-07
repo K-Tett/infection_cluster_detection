@@ -20,8 +20,8 @@ export class ClusterService {
    */
   uploadFiles(transfersFile: File, microbiologyFile: File): Observable<{ message: string }> {
     const formData = new FormData();
-    formData.append('files', transfersFile, 'transfers.csv');
-    formData.append('files', microbiologyFile, 'microbiology.csv');
+    formData.append('files', transfersFile, transfersFile.name);  
+    formData.append('files', microbiologyFile, microbiologyFile.name);
 
     return this.http.post<{ message: string }>(`${this.apiUrl}/upload/`, formData);
   }

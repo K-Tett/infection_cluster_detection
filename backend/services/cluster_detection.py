@@ -22,6 +22,7 @@ def parse_and_store_csv(db: Session, transfers_content: bytes, microbiology_cont
         microbiology_df['collection_date'] = pd.to_datetime(microbiology_df['collection_date'])
         
         # Clear existing data (for development - in production, consider upsert logic)
+        # FIXME - Could open up a MITM attack (High I/O overhead)
         db.query(Transfer).delete()
         db.query(Microbiology).delete()
         
@@ -110,7 +111,6 @@ def find_clusters_from_db(db: Session, time_window: int = 14, location_overlap: 
                     if pair in patient_pairs:
                         continue
 
-                    # ✅ FIX: Use the safe .get() method to avoid crashes
                     p1_transfers = patient_transfers.get(test1.patient_id, [])
                     p2_transfers = patient_transfers.get(test2.patient_id, [])
 
@@ -162,7 +162,6 @@ def _check_temporal_spatial_link(test1, test2, p1_transfers, p2_transfers, time_
                     return True
     
     return False
-
 
 def get_cluster_statistics(db: Session) -> Dict[str, Any]:
     """
